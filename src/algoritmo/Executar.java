@@ -178,9 +178,58 @@ class Individuo {
 	}
 }
 
+class AlgoritmoGenetico {
+	private int tamanhoPopulacao;
+	private List<Individuo> populacao = new ArrayList<>();
+	private int geracao;
+	private Individuo melhorSolucao;
+	
+	public AlgoritmoGenetico(int tamanhoPopulacao) {
+		this.tamanhoPopulacao = tamanhoPopulacao;
+	}
+	
+	public void inicializaPopulacao(List espacos, List valores, Double limiteEspacos) {
+		for (int i = 0; i < this.tamanhoPopulacao; i++) {
+			this.populacao.add(new Individuo(espacos, valores, limiteEspacos));
+		}
+		this.melhorSolucao = this.populacao.get(0);
+	}
+
+	public int getTamanhoPopulacao() {
+		return tamanhoPopulacao;
+	}
+
+	public void setTamanhoPopulacao(int tamanhoPopulacao) {
+		this.tamanhoPopulacao = tamanhoPopulacao;
+	}
+
+	public List<Individuo> getPopulacao() {
+		return populacao;
+	}
+
+	public void setPopulacao(List<Individuo> populacao) {
+		this.populacao = populacao;
+	}
+
+	public int getGeracao() {
+		return geracao;
+	}
+
+	public void setGeracao(int geracao) {
+		this.geracao = geracao;
+	}
+
+	public Individuo getMelhorSolucao() {
+		return melhorSolucao;
+	}
+
+	public void setMelhorSolucao(Individuo melhorSolucao) {
+		this.melhorSolucao = melhorSolucao;
+	}
+}
+
 public class Executar {
 	public static void main(String args[]) {
-		
 		List<Produto> listaProdutos = new ArrayList<>();
 		listaProdutos.add(new Produto("Geladeira Dako", 0.751, 999.90));
 		listaProdutos.add(new Produto("Iphone 6", 0.000089, 2911.12));
@@ -202,25 +251,19 @@ public class Executar {
 		List nomes = new ArrayList<>();
 	    for (Produto produto: listaProdutos) {
 	    	espacos.add(produto.getEspaco());
-	    	valores.add(produto.getNome());
+	    	valores.add(produto.getValor());
 	    	nomes.add(produto.getNome());
 	    }
 	    Double limite = 3.0;
 	    
-	    Individuo individuo1 = new Individuo(espacos, valores, limite);
-	    System.out.println("\nIndividuo 1 " + individuo1.getCromossomo());
-	    individuo1.avaliacao();
-	    System.out.println("Nota: " + individuo1.getNotaAvaliacao());
-	    System.out.println("Espaco usado: " + individuo1.getEspacoUsado());
-	    
-	    Individuo individuo2 = new Individuo(espacos, valores, limite);
-	    System.out.println("\nIndividuo 2 " + individuo2.getCromossomo());
-	    individuo2.avaliacao();
-	    System.out.println("Nota: " + individuo2.getNotaAvaliacao());
-	    System.out.println("Espaco usado: " + individuo2.getEspacoUsado());
-	    
-	    individuo1.crossover(individuo2);
-	    individuo1.mutacao(0.5);
-	    individuo2.mutacao(0.05);
+	   int tamanhoPopulacao = 20;
+	   AlgoritmoGenetico ag = new AlgoritmoGenetico(tamanhoPopulacao);
+	   ag.inicializaPopulacao(espacos, valores, limite);
+	   for (int i = 0; i < ag.getTamanhoPopulacao(); i++) {
+		   System.out.println("*** Individuo " + i + "***\n Espacos = " + 
+	               ag.getPopulacao().get(i).getEspacos() + 
+	               "\nValores = " + ag.getPopulacao().get(i).getValores() + 
+	               "\nCromossomo = " + ag.getPopulacao().get(i).getCromossomo());
+	   }
 	}
 }
