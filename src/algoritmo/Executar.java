@@ -44,6 +44,7 @@ class Individuo {
 	private List valores = new ArrayList<>();
 	private Double limiteEspacos;
 	private Double notaAvaliacao;
+	private Double espacoUsado;
 	private int geracao;
 	private List cromossomo = new ArrayList<>();
 	
@@ -52,6 +53,7 @@ class Individuo {
 		this.valores = valores;
 		this.limiteEspacos = limiteEspacos;
 		this.notaAvaliacao = 0.0;
+		this.espacoUsado = 0.0;
 		this.geracao = 0;
 		
 		for (int i = 0; i < this.espacos.size(); i++) {
@@ -62,6 +64,24 @@ class Individuo {
 				this.cromossomo.add("1");
 			}
 		}
+	}
+	
+	public void avaliacao() {
+		Double nota = 0.0;
+		Double somaEspacos = 0.0;
+		for (int i = 0; i < this.cromossomo.size(); i++) {
+			if (this.cromossomo.get(i).equals("1")) {
+				//nota += (Double)this.valores.get(i);
+				somaEspacos += (Double) this.espacos.get(i);
+			}
+		}
+		
+		if (somaEspacos > this.limiteEspacos) {
+			nota = 1.0;
+		}
+		
+		this.notaAvaliacao = nota;
+		this.espacoUsado = somaEspacos;
 	}
 
 	public List getEspacos() {
@@ -94,6 +114,14 @@ class Individuo {
 
 	public void setNotaAvaliacao(Double notaAvaliacao) {
 		this.notaAvaliacao = notaAvaliacao;
+	}
+
+	public Double getEspacoUsado() {
+		return espacoUsado;
+	}
+
+	public void setEspacoUsado(Double espacoUsado) {
+		this.espacoUsado = espacoUsado;
 	}
 
 	public int getGeracao() {
@@ -143,15 +171,8 @@ public class Executar {
 	    Double limite = 3.0;
 	    
 	    Individuo individuo1 = new Individuo(espacos, valores, limite);
-	    System.out.println("Espaços: " + individuo1.getEspacos());
-	    System.out.println("Valores: " + individuo1.getValores());
-	    System.out.println("Cromossomo: " + individuo1.getCromossomo());
-	    System.out.println("\nComponentes da carga");
-	    for (int i = 0; i < listaProdutos.size(); i++) {
-	    	if (individuo1.getCromossomo().get(i) == "1") {
-	    		System.out.println("Nome: " + listaProdutos.get(i).getNome() 
-	    				+ " R$: " + listaProdutos.get(i).getValor());
-	    	}
-	    }
+	    individuo1.avaliacao();
+	    System.out.println("Nota: " + individuo1.getNotaAvaliacao());
+	    System.out.println("Espaco usado: " + individuo1.getEspacoUsado());
 	}
 }

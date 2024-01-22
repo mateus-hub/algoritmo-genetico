@@ -1,8 +1,5 @@
 package historico;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /*class Produto {
 	private String nome;
 	private Double espaco;
