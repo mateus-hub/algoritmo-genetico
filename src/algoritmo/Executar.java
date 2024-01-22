@@ -83,6 +83,28 @@ class Individuo {
 		this.notaAvaliacao = nota;
 		this.espacoUsado = somaEspacos;
 	}
+	
+	public List crossover(Individuo outroIndividuo) {
+		int corte =  (int) Math.round(Math.random() * this.cromossomo.size());
+		List filho1 = new ArrayList<>();
+		filho1.addAll(outroIndividuo.getCromossomo().subList(0, corte));
+		filho1.add(this.cromossomo.subList(corte, this.cromossomo.size()));
+		
+		List filho2 = new ArrayList<>();
+		filho2.addAll(this.cromossomo.subList(0, corte));
+		filho2.addAll(outroIndividuo.getCromossomo().subList(corte, this.cromossomo.size()));
+		
+		List<Individuo> filhos = new ArrayList<>();
+		filhos.add(new Individuo(this.espacos, this.valores, this.limiteEspacos));
+		filhos.add(new Individuo(this.espacos, this.valores, this.limiteEspacos));
+		
+		filhos.get(0).setCromossomo(filho1);
+		filhos.get(0).setGeracao(this.geracao + 1);
+		filhos.get(1).setCromossomo(filho2);
+		filhos.get(1).setGeracao(this.geracao + 1);
+		
+		return filhos;
+	}
 
 	public List getEspacos() {
 		return espacos;
@@ -171,8 +193,17 @@ public class Executar {
 	    Double limite = 3.0;
 	    
 	    Individuo individuo1 = new Individuo(espacos, valores, limite);
+	    System.out.println("\nIndividuo 1 " + individuo1.getCromossomo());
 	    individuo1.avaliacao();
 	    System.out.println("Nota: " + individuo1.getNotaAvaliacao());
 	    System.out.println("Espaco usado: " + individuo1.getEspacoUsado());
+	    
+	    Individuo individuo2 = new Individuo(espacos, valores, limite);
+	    System.out.println("\nIndividuo 2 " + individuo2.getCromossomo());
+	    individuo2.avaliacao();
+	    System.out.println("Nota: " + individuo2.getNotaAvaliacao());
+	    System.out.println("Espaco usado: " + individuo2.getEspacoUsado());
+	    
+	    individuo1.crossover(individuo2);
 	}
 }
