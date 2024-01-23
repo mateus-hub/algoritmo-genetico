@@ -210,6 +210,12 @@ class AlgoritmoGenetico {
 	public void ordenaPopulacao() {
 		Collections.sort(this.populacao);
 	}
+	
+	public void melhorIndividuo(Individuo individuo) {
+		if (individuo.getNotaAvaliacao() > this.melhorSolucao.getNotaAvaliacao()) {
+			this.melhorSolucao = individuo;
+		}
+	}
 
 	public int getTamanhoPopulacao() {
 		return tamanhoPopulacao;
@@ -278,13 +284,13 @@ public class Executar {
 	   for( Individuo individuo : ag.getPopulacao()) {
 		   individuo.avaliacao();
 	   }
-	   for (int i = 0; i < ag.getTamanhoPopulacao(); i++) {
-		   System.out.println("*** Individuo " + i + "***\n Espacos = " + 
-	               ag.getPopulacao().get(i).getEspacos() + 
-	               "\nValores = " + ag.getPopulacao().get(i).getValores() + 
-	               "\nCromossomo = " + ag.getPopulacao().get(i).getCromossomo() + 
-	               "\nNota = " + ag.getPopulacao().get(i).getNotaAvaliacao());
-	   }
+	   ag.ordenaPopulacao();
+	   ag.melhorIndividuo(ag.getPopulacao().get(0));
+	   System.out.println("Melhor solucao para o problema: " + 
+			   ag.getMelhorSolucao().getCromossomo() + 
+			   "Nota: " + ag.getMelhorSolucao().getNotaAvaliacao());
+	  
+	 
 	}
 }
 
