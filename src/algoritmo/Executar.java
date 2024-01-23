@@ -108,7 +108,7 @@ class Individuo implements Comparable<Individuo> {
 	}
 	
 	public Individuo mutacao(Double taxaMutacao) {
-		System.out.println("Antes da mutacao: " + this.cromossomo);
+		//System.out.println("Antes da mutacao: " + this.cromossomo);
 		for (int i = 0; i < this.cromossomo.size(); i++) {
 			if (Math.random() < taxaMutacao) {
 				if (this.cromossomo.get(i).equals(("1"))) {
@@ -118,7 +118,7 @@ class Individuo implements Comparable<Individuo> {
 				}
 			}
 		}
-		System.out.println("Depois da mutacao: " + this.cromossomo);
+		//System.out.println("Depois da mutacao: " + this.cromossomo);
 		return this;
 	}
 
@@ -279,7 +279,7 @@ public class Executar {
 		listaProdutos.add(new Produto("TV 55' ", 0.400, 4346.99));
 		listaProdutos.add(new Produto("TV 50' ", 0.290, 3999.90));
 		listaProdutos.add(new Produto("TV 42' ", 0.200, 2999.00));
-		listaProdutos.add(new Produto("Notebook Dell", 0.00350, 2499.90));
+		/*listaProdutos.add(new Produto("Notebook Dell", 0.00350, 2499.90));
 		listaProdutos.add(new Produto("Ventilador Panasonic", 0.496, 199.90));
 		listaProdutos.add(new Produto("Microondas Eletrolux", 0.0424, 308.66));
 		listaProdutos.add(new Produto("Microondas LG", 0.0544, 429.90));
@@ -287,7 +287,7 @@ public class Executar {
 		listaProdutos.add(new Produto("Geladeira Brastemp", 0.635, 849.00));
 		listaProdutos.add(new Produto("Geladeira Consul", 0.870, 1199.89));
 		listaProdutos.add(new Produto("Notebook Lenovo", 0.498, 1999.90));
-		listaProdutos.add(new Produto("Notebook Asus", 0.527, 3999.00));
+		listaProdutos.add(new Produto("Notebook Asus", 0.527, 3999.00));*/
 
 		List espacos = new ArrayList<>();
 		List valores = new ArrayList<>();
@@ -298,8 +298,7 @@ public class Executar {
 	    	nomes.add(produto.getNome());
 	    }
 	    Double limite = 3.0;
-	    
-	   int tamanhoPopulacao = 20;
+	   int tamanhoPopulacao = 4;
 	   AlgoritmoGenetico ag = new AlgoritmoGenetico(tamanhoPopulacao);
 	   ag.inicializaPopulacao(espacos, valores, limite);
 	   for( Individuo individuo : ag.getPopulacao()) {
@@ -308,13 +307,25 @@ public class Executar {
 	   ag.ordenaPopulacao();
 	   ag.melhorIndividuo(ag.getPopulacao().get(0));
 	   Double soma = ag.somaAvaliacoes();
+	   Double probabilidadeMutacao = 0.01;
+	   List<Individuo> novaPopulacao = new ArrayList<>();
 	   for( int i = 0; i < ag.getPopulacao().size() / 2; i++) {
 		   int pai1 = ag.selecionaPai(soma);
 		   int pai2 = ag.selecionaPai(soma);
+		   
+		   List<Individuo> filhos = ag.getPopulacao().get(pai1).crossover(ag.getPopulacao().get(pai2));
+		   novaPopulacao.add(filhos.get(0).mutacao(probabilidadeMutacao));
+		   novaPopulacao.add(filhos.get(1).mutacao(probabilidadeMutacao));
 	   }
-	  
-	  
-	 
+	   ag.setPopulacao(novaPopulacao);
+       for (Individuo individuo: ag.getPopulacao()) {
+    	   individuo.avaliacao();
+       }
+       ag.ordenaPopulacao();
+       ag.melhorIndividuo(ag.getPopulacao().get(0));
+       soma = ag.somaAvaliacoes();
+       System.out.println("Melhor: " + ag.getMelhorSolucao().getCromossomo() + 
+    		   " Valor: " + ag.getMelhorSolucao().getNotaAvaliacao());
 	}
 }
 
