@@ -216,6 +216,14 @@ class AlgoritmoGenetico {
 			this.melhorSolucao = individuo;
 		}
 	}
+	
+	public Double somaAvaliacoes() {
+		Double soma = 0.0;
+		for(Individuo individuo: this.populacao) {
+			soma += individuo.getNotaAvaliacao();
+		}
+		return soma;
+	}
 
 	public int getTamanhoPopulacao() {
 		return tamanhoPopulacao;
@@ -286,9 +294,9 @@ public class Executar {
 	   }
 	   ag.ordenaPopulacao();
 	   ag.melhorIndividuo(ag.getPopulacao().get(0));
-	   System.out.println("Melhor solucao para o problema: " + 
-			   ag.getMelhorSolucao().getCromossomo() + 
-			   "Nota: " + ag.getMelhorSolucao().getNotaAvaliacao());
+	   Double soma = ag.somaAvaliacoes();
+	   System.out.println("Soma das avaliacoes: " + soma);
+	  
 	  
 	 
 	}
