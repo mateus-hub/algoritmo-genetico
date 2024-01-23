@@ -245,6 +245,46 @@ class AlgoritmoGenetico {
 				" Espaco: " + melhor.getEspacoUsado() + 
 				" Cromossomo: " + melhor.getCromossomo());
 	}
+	
+	public List resolver(Double taxaMutacao, int numeroGeracoes, List espacos,
+			List valores, Double limiteEspacos) {
+		
+		this.inicializaPopulacao(espacos, valores, limiteEspacos);
+		for (Individuo individuo: this.populacao) {
+			individuo.avaliacao();
+		}
+		this.ordenaPopulacao();
+		this.visualizaGeracao();
+		
+		for (int geracao = 0; geracao < numeroGeracoes; geracao++) {
+			Double somaAvaliacao = this.somaAvaliacoes();
+			List<Individuo> novaPopulacao = new ArrayList<>();
+			
+			for (int i = 0; i < this.populacao.size() / 2; i++) {
+				int pai1 = this.selecionaPai(somaAvaliacao);
+				int pai2 = this.selecionaPai(somaAvaliacao);
+				
+				List<Individuo> filhos = this.getPopulacao().get(pai1).crossover(this.getPopulacao().get(pai2));
+			    novaPopulacao.add(filhos.get(0).mutacao(taxaMutacao));
+			    novaPopulacao.add(filhos.get(1).mutacao(taxaMutacao));
+			}
+			
+			this.setPopulacao(novaPopulacao);
+			for (Individuo individuo: this.getPopulacao()) {
+				individuo.avaliacao();
+			}
+			this.ordenaPopulacao();
+			this.visualizaGeracao();
+			Individuo melhor = this.populacao.get(0);
+			this.melhorIndividuo(melhor);
+		}
+		System.out.println("Melhor solução G -> " + this.melhorSolucao.getGeracao() + 
+				" Valor: " + this.melhorSolucao.getNotaAvaliacao() + 
+				" Espaço: " + this.melhorSolucao.getEspacoUsado() + 
+				" Cromossomo: " + this.melhorSolucao.getCromossomo());
+		return this.melhorSolucao.getCromossomo();
+		
+	}
 
 	public int getTamanhoPopulacao() {
 		return tamanhoPopulacao;
@@ -306,11 +346,16 @@ public class Executar {
 	    	nomes.add(produto.getNome());
 	    }
 	   Double limite = 3.0;
-	   int tamanhoPopulacao = 20;
-	   Double taxaMutacao = 0.01;
-	   int numeroGeracoes = 100;
+	   int tamanhoPopulacao = 30;
+	   Double taxaMutacao = 0.05;
+	   int numeroGeracoes = 200;
 	   AlgoritmoGenetico ag = new AlgoritmoGenetico(tamanhoPopulacao);
-	
+	   List resultado = ag.resolver(taxaMutacao, numeroGeracoes, espacos, valores, limite);
+	   for (int i = 0; i < listaProdutos.size(); i++) {
+		   if (resultado.get(i).equals("1")) {
+			   System.out.println("Nome: " + listaProdutos.get(i).getNome());
+		   }
+	   }
 	   
 	}
 }
