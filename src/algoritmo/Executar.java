@@ -1,6 +1,7 @@
 package algoritmo;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 class Produto {
@@ -39,7 +40,7 @@ class Produto {
 	}
 }
 
-class Individuo {
+class Individuo implements Comparable<Individuo> {
 	private List espacos = new ArrayList<>();
 	private List valores = new ArrayList<>();
 	private Double limiteEspacos;
@@ -71,7 +72,7 @@ class Individuo {
 		Double somaEspacos = 0.0;
 		for (int i = 0; i < this.cromossomo.size(); i++) {
 			if (this.cromossomo.get(i).equals("1")) {
-				//nota += (Double)this.valores.get(i);
+				nota += (Double)this.valores.get(i);
 				somaEspacos += (Double) this.espacos.get(i);
 			}
 		}
@@ -176,6 +177,17 @@ class Individuo {
 	public void setCromossomo(List cromossomo) {
 		this.cromossomo = cromossomo;
 	}
+
+	@Override
+	public int compareTo(Individuo o) {
+		if (this.notaAvaliacao > o.getNotaAvaliacao()) {
+			return -1;
+		}
+		if(this.notaAvaliacao < o.getNotaAvaliacao()) {
+			return 1;
+		}
+		return 0;
+	}
 }
 
 class AlgoritmoGenetico {
@@ -193,6 +205,10 @@ class AlgoritmoGenetico {
 			this.populacao.add(new Individuo(espacos, valores, limiteEspacos));
 		}
 		this.melhorSolucao = this.populacao.get(0);
+	}
+	
+	public void ordenaPopulacao() {
+		Collections.sort(this.populacao);
 	}
 
 	public int getTamanhoPopulacao() {
@@ -259,11 +275,17 @@ public class Executar {
 	   int tamanhoPopulacao = 20;
 	   AlgoritmoGenetico ag = new AlgoritmoGenetico(tamanhoPopulacao);
 	   ag.inicializaPopulacao(espacos, valores, limite);
+	   for( Individuo individuo : ag.getPopulacao()) {
+		   individuo.avaliacao();
+	   }
 	   for (int i = 0; i < ag.getTamanhoPopulacao(); i++) {
 		   System.out.println("*** Individuo " + i + "***\n Espacos = " + 
 	               ag.getPopulacao().get(i).getEspacos() + 
 	               "\nValores = " + ag.getPopulacao().get(i).getValores() + 
-	               "\nCromossomo = " + ag.getPopulacao().get(i).getCromossomo());
+	               "\nCromossomo = " + ag.getPopulacao().get(i).getCromossomo() + 
+	               "\nNota = " + ag.getPopulacao().get(i).getNotaAvaliacao());
 	   }
 	}
 }
+
+
