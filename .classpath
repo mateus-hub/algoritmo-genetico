@@ -8,5 +8,6 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="lib" path="bibliotecas/jcommon-1.0.23.jar"/>
 	<classpathentry kind="lib" path="bibliotecas/jfreechart-1.0.19.jar"/>
+	<classpathentry kind="lib" path="bibliotecas/postgresql-42.7.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
