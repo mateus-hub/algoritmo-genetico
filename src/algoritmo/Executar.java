@@ -4,6 +4,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.ui.ApplicationFrame;
+import org.jfree.ui.RefineryUtilities;
+
 class Produto {
 	private String nome;
 	private Double espaco;
@@ -89,7 +97,7 @@ class Individuo implements Comparable<Individuo> {
 		int corte =  (int) Math.round(Math.random() * this.cromossomo.size());
 		List filho1 = new ArrayList<>();
 		filho1.addAll(outroIndividuo.getCromossomo().subList(0, corte));
-		filho1.add(this.cromossomo.subList(corte, this.cromossomo.size()));
+		filho1.addAll(this.cromossomo.subList(corte, this.cromossomo.size()));
 		
 		List filho2 = new ArrayList<>();
 		filho2.addAll(this.cromossomo.subList(0, corte));
@@ -195,6 +203,7 @@ class AlgoritmoGenetico {
 	private List<Individuo> populacao = new ArrayList<>();
 	private int geracao;
 	private Individuo melhorSolucao;
+	private List<Individuo> melhoresCromossomos = new ArrayList<>();
 	
 	public AlgoritmoGenetico(int tamanhoPopulacao) {
 		this.tamanhoPopulacao = tamanhoPopulacao;
@@ -240,6 +249,7 @@ class AlgoritmoGenetico {
 	
 	public void visualizaGeracao() {
 		Individuo melhor = this.populacao.get(0);
+		this.melhoresCromossomos.add(melhor);
 		System.out.println("G: " + melhor.getGeracao() + 
 				" Valor: " + melhor.getNotaAvaliacao() + 
 				" Espaco: " + melhor.getEspacoUsado() + 
@@ -282,8 +292,15 @@ class AlgoritmoGenetico {
 				" Valor: " + this.melhorSolucao.getNotaAvaliacao() + 
 				" Espaço: " + this.melhorSolucao.getEspacoUsado() + 
 				" Cromossomo: " + this.melhorSolucao.getCromossomo());
-		return this.melhorSolucao.getCromossomo();
-		
+		return this.melhorSolucao.getCromossomo();		
+	}
+	
+	public List<Individuo> getMelhoresCromossomos() {
+		return melhoresCromossomos;
+	}
+
+	public void setMelhoresCromossomos(List<Individuo> melhoresCromossomos) {
+		this.melhoresCromossomos = melhoresCromossomos;
 	}
 
 	public int getTamanhoPopulacao() {
@@ -319,6 +336,32 @@ class AlgoritmoGenetico {
 	}
 }
 
+class Grafico extends ApplicationFrame {
+	private List<Individuo> melhoresCromossomos = new ArrayList<>();
+	
+	public Grafico(String tituloJanela, String tituloGrafico, List melhores) {
+		super(tituloJanela);
+		this.melhoresCromossomos = melhores;
+		JFreeChart graficoLinha = ChartFactory.createLineChart(tituloGrafico, 
+				"Geração", "Valor", 
+				carregarDados(),
+				PlotOrientation.VERTICAL,
+				true, true, false);
+		ChartPanel janelaGrafico = new ChartPanel(graficoLinha);
+		janelaGrafico.setPreferredSize(new java.awt.Dimension(800, 600));
+		setContentPane(janelaGrafico);
+	}
+	
+	private DefaultCategoryDataset carregarDados() {
+		DefaultCategoryDataset dados = new DefaultCategoryDataset();
+		for (int i = 0; i < melhoresCromossomos.size(); i++) {
+			dados.addValue(melhoresCromossomos.get(i).getNotaAvaliacao(), "Melhor solução", "" + i);
+		}
+		return dados;
+	}
+	
+}
+
 public class Executar {
 	public static void main(String args[]) {
 		List<Produto> listaProdutos = new ArrayList<>();
@@ -346,9 +389,9 @@ public class Executar {
 	    	nomes.add(produto.getNome());
 	    }
 	   Double limite = 3.0;
-	   int tamanhoPopulacao = 30;
+	   int tamanhoPopulacao = 20;
 	   Double taxaMutacao = 0.05;
-	   int numeroGeracoes = 200;
+	   int numeroGeracoes = 100;
 	   AlgoritmoGenetico ag = new AlgoritmoGenetico(tamanhoPopulacao);
 	   List resultado = ag.resolver(taxaMutacao, numeroGeracoes, espacos, valores, limite);
 	   for (int i = 0; i < listaProdutos.size(); i++) {
@@ -357,6 +400,10 @@ public class Executar {
 		   }
 	   }
 	   
+	   Grafico g = new Grafico("Algoritmo genético", "Evolução das soluções", ag.getMelhoresCromossomos());
+	   g.pack();
+	   RefineryUtilities.centerFrameOnScreen(g);
+	   g.setVisible(true);
 	}
 }
 
