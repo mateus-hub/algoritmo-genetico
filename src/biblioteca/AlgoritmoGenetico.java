@@ -9,6 +9,7 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.ui.ApplicationFrame;
+import org.jfree.ui.RefineryUtilities;
 import org.jgap.Chromosome;
 import org.jgap.Configuration;
 import org.jgap.DefaultFitnessEvaluator;
@@ -206,5 +207,34 @@ public class AlgoritmoGenetico {
 			this.melhoresCromossomos.add(populacao.getFittestChromosome());
 			populacao.evolve();
 		}
+	}
+	
+	public static void main(String args[]) throws InvalidConfigurationException {
+		AlgoritmoGenetico ag = new AlgoritmoGenetico();
+		ag.carregar();
+		ag.procurarMelhorSolucao();
+		
+		int geracao = 0;
+		for (int i = 0; i < ag.melhoresCromossomos.size(); i++) {
+			if (ag.melhor == null) {
+				ag.melhor = ag.melhoresCromossomos.get(i);
+			} else if (ag.melhor.getFitnessValue() < ag.melhoresCromossomos.get(i).getFitnessValue()) {
+				ag.melhor = ag.melhoresCromossomos.get(i);
+				geracao = i;
+			}
+		}
+		System.out.println("\nMelhor solucao");
+		ag.visualizaGeracao(ag.melhor, geracao);
+		
+		for (int i = 0; i < ag.listaProdutos.size(); i++) {
+			if (ag.melhor.getGene(i).getAllele().toString().equals("1")) {
+				System.out.println("Nome: " + ag.listaProdutos.get(i).getNome());
+			}
+		}
+		
+		Grafico g = new Grafico("Algoritmo Genetico", "Evolucao das solucoes", ag.melhoresCromossomos);
+		g.pack();
+		RefineryUtilities.centerFrameOnScreen(g);
+		g.setVisible(true);
 	}
 }
