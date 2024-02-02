@@ -365,7 +365,6 @@ class Grafico extends ApplicationFrame {
 		}
 		return dados;
 	}
-	
 }
 
 public class Executar {
